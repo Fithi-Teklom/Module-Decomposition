@@ -1,3 +1,4 @@
+console.log("SERVER.JS IS RUNNING");
 import express from "express";
 import cors from "cors";
 
@@ -14,13 +15,30 @@ app.get("/messages", (req, res) => {
 });
 
 app.post("/messages", (req, res) => {
-  const message = req.body;
+  const { username, text } = req.body;
+
+  if (!username || username.trim() === "") {
+    return res.status(400).json({
+      error: "Username is required",
+    });
+  }
+
+  if (!text || text.trim() === "") {
+    return res.status(400).json({
+      error: "Message is required",
+    });
+  }
+
+  const message = {
+    username: username.trim(),
+    text: text.trim(),
+  };
 
   messages.push(message);
 
-  res.json(message);
+  res.status(201).json(message);
 });
 
 app.listen(port, () => {
-  console.error(`Chat server listening on port ${port}`);
+  console.log(`Chat server listening on port ${port}`);
 });
