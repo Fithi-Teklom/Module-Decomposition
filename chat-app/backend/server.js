@@ -1,4 +1,3 @@
-console.log("SERVER.JS IS RUNNING");
 import express from "express";
 import cors from "cors";
 
@@ -6,16 +5,35 @@ const app = express();
 const port = 3000;
 
 const messages = [];
+const callbacksForNewMessages = [];
 
 app.use(express.json());
 app.use(cors());
 
 app.get("/messages", (req, res) => {
-  res.json(messages);
+  const since = req.query.since;
+
+  let messagesToSend;
+
+  if (since === undefined) {
+    messagesToSend = messages;
+  } else {
+    const sinceId = Number(since);
+
+    messagesToSend = messages.filter(
+      (message) => message.id > sinceId
+    );
+  }
+
+  if (messagesToSend.length === 0) {
+    callbacksForNewMessages.push((value) => res.json(value));
+  } else {
+    res.json(messagesToSend);
+  }
 });
 
 app.post("/messages", (req, res) => {
-  const { username, text } = req.body;
+  const { username, text, color } = req.body;
 
   if (!username || username.trim() === "") {
     return res.status(400).json({
@@ -30,11 +48,19 @@ app.post("/messages", (req, res) => {
   }
 
   const message = {
+    id: messages.length,
     username: username.trim(),
     text: text.trim(),
+    color: color,
   };
 
   messages.push(message);
+
+  while (callbacksForNewMessages.length > 0) {
+    const callback = callbacksForNewMessages.pop();
+
+    callback([message]);
+  }
 
   res.status(201).json(message);
 });
