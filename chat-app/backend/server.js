@@ -10,6 +10,10 @@ const callbacksForNewMessages = [];
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("Chat backend is running!");
+});
+
 app.get("/messages", (req, res) => {
   const since = req.query.since;
 
