@@ -1,4 +1,4 @@
-const serverUrl = "http://localhost:3000";
+const serverUrl = "https://fithi-chat-app-backend.trainees.hosting.cyf.academy";
 let lastMessageId = null;
 const usernameInput = document.getElementById("usernameInput");
 const messageInput = document.getElementById("messageInput");
