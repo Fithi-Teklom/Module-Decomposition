@@ -26,32 +26,13 @@ async function getMessages() {
     const messageElement = document.createElement("p");
     messageElement.textContent = `${message.username}: ${message.text}`;
     messageElement.style.color = message.color;
-
-    // const likeButton = document.createElement("button");
-    // likeButton.textContent = `👍 ${message.likes}`;
-
-    // likeButton.addEventListener("click", () => {
-    //   likeMessage(message.id);
-    // });
     messagesContainer.appendChild(messageElement);
-    // messagesContainer.appendChild(likeButton);
   });
   if (messages.length > 0) {
     lastMessageId = messages[messages.length - 1].id;
   }
   getMessages();
 }
-
-// async function likeMessage(messageId) {
-//   const response = await fetch(`${serverUrl}/messages/${messageId}/like`, {
-//     method: "POST",
-//   });
-
-//   if (!response.ok) {
-//     console.error("Could not like message");
-//     return;
-//   }
-// }
 
 async function sendMessage() {
   const username = usernameInput.value.trim();

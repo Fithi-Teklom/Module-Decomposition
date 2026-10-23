@@ -5,6 +5,7 @@ const app = express();
 const port = 3000;
 
 const messages = [];
+const allowedColors = ["black", "blue", "green", "red", "purple"];
 const callbacksForNewMessages = [];
 
 app.use(express.json());
@@ -24,9 +25,7 @@ app.get("/messages", (req, res) => {
   } else {
     const sinceId = Number(since);
 
-    messagesToSend = messages.filter(
-      (message) => message.id > sinceId
-    );
+    messagesToSend = messages.filter((message) => message.id > sinceId);
   }
 
   if (messagesToSend.length === 0) {
@@ -48,6 +47,11 @@ app.post("/messages", (req, res) => {
   if (!text || text.trim() === "") {
     return res.status(400).json({
       error: "Message is required",
+    });
+  }
+  if (!allowedColors.includes(color)) {
+    return res.status(400).json({
+      error: "Invalid message color",
     });
   }
 
