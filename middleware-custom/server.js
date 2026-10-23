@@ -39,10 +39,27 @@ const bodyMiddleware = (req, res, next) => {
   });
 };
 
+
 app.post("/", usernameMiddleware, bodyMiddleware, (req, res) => {
-  res.send(
-    `Username: ${req.username}\nSubjects: ${req.body.join(", ")}`
-  );
+  const username = req.username;
+  const subjects = req.body;
+  const subjectCount = subjects.length;
+
+  const authenticationMessage = username
+    ? `You are authenticated as ${username}.`
+    : "You are not authenticated.";
+
+  let subjectsMessage;
+
+  if (subjectCount === 0) {
+    subjectsMessage = "You have requested information about 0 subjects.";
+  } else {
+    const subjectWord = subjectCount === 1 ? "subject" : "subjects";
+
+    subjectsMessage = `You have requested information about ${subjectCount} ${subjectWord}: ${subjects.join(", ")}.`;
+  }
+
+  res.send(`${authenticationMessage}\n\n${subjectsMessage}\n`);
 });
 
 app.listen(3001, () => {
